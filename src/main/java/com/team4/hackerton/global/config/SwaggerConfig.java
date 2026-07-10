@@ -31,6 +31,7 @@ public class SwaggerConfig {
 
         return new OpenAPI()
                 .info(info)
+                .addServersItem(new Server().url("https://13.125.129.40.nip.io").description("개발 서버"))
                 .addServersItem(new Server().url("http://localhost:8080").description("로컬"))
                 .addSecurityItem(securityRequirement)
                 .components(components);
