@@ -12,7 +12,7 @@ spring:
   # 2. JPA 설정 (Hibernate)
   jpa:
     hibernate:
-      ddl-auto: update # 테이블 자동 업데이트 (데이터 유지)
+      ddl-auto: create # 테이블 자동 업데이트 (데이터 유지)
     show-sql: false
     open-in-view: false      # OSIV 비활성화
     properties:
