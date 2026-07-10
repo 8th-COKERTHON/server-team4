@@ -8,10 +8,12 @@ import com.team4.hackerton.domain.auth.dto.response.SignUpResponse;
 import com.team4.hackerton.domain.auth.dto.response.TokenResponse;
 import com.team4.hackerton.domain.auth.service.AuthService;
 import com.team4.hackerton.global.apiPayload.ApiResponse;
+import com.team4.hackerton.global.security.userdetails.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,5 +46,12 @@ public class AuthController {
     public ApiResponse<TokenResponse> reissue(@RequestBody @Valid ReissueRequest request) {
         TokenResponse response = authService.reissue(request);
         return ApiResponse.onSuccess(AuthSuccessCode.REISSUE_SUCCESS, response);
+    }
+
+    @Operation(summary = "로그아웃")
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        authService.logout(userDetails.getUsername());
+        return ApiResponse.onSuccess(AuthSuccessCode.LOGOUT_SUCCESS);
     }
 }

@@ -1,6 +1,7 @@
 package com.team4.hackerton.domain.auth;
 
 import com.team4.hackerton.domain.auth.dto.request.LoginRequest;
+import com.team4.hackerton.domain.auth.dto.request.ReissueRequest;
 import com.team4.hackerton.domain.auth.dto.request.SignUpRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,11 +66,30 @@ class AuthControllerTest {
                 .andReturn().getResponse().getContentAsString();
 
         String accessToken = objectMapper.readTree(loginResponseJson).get("result").get("accessToken").asString();
+        String refreshToken = objectMapper.readTree(loginResponseJson).get("result").get("refreshToken").asString();
 
         // 발급받은 토큰으로 보호된 API 접근은 200
         mockMvc.perform(get("/api/example/1")
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
+
+        // 토큰 없이 로그아웃 시도는 401
+        mockMvc.perform(post("/api/auth/logout"))
+                .andExpect(status().isUnauthorized());
+
+        // 로그아웃하면 리프레시 토큰이 무효화된다
+        mockMvc.perform(post("/api/auth/logout")
+                        .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true));
+
+        ReissueRequest reissueRequest = new ReissueRequest();
+        setField(reissueRequest, "refreshToken", refreshToken);
+        mockMvc.perform(post("/api/auth/reissue")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reissueRequest)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("AUTH401_4"));
 
         // 잘못된 비밀번호는 401
         setField(loginRequest, "password", "wrong-password");

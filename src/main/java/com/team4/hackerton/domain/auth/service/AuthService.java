@@ -76,6 +76,14 @@ public class AuthService {
         return issueTokens(user);
     }
 
+    @Transactional
+    public void logout(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(AuthErrorCode.USER_NOT_FOUND));
+
+        user.updateRefreshToken(null);
+    }
+
     private TokenResponse issueTokens(User user) {
         String accessToken = jwtProvider.generateAccessToken(user.getEmail());
         String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());

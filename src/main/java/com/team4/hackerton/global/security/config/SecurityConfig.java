@@ -23,7 +23,9 @@ import java.util.List;
 public class SecurityConfig {
 
     private static final String[] PERMIT_ALL_PATTERNS = {
-            "/api/auth/**",
+            "/api/auth/signup",
+            "/api/auth/login",
+            "/api/auth/reissue",
             "/swagger-ui/**",
             "/v3/api-docs/**",
     };
