@@ -6,9 +6,11 @@ import com.team4.hackerton.global.apiPayload.ApiResponse;
 import com.team4.hackerton.global.apiPayload.code.GeneralErrorCode;
 import com.team4.hackerton.global.apiPayload.code.GeneralSuccessCode;
 import com.team4.hackerton.global.apiPayload.exception.AppException;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+@Hidden
 @RestController
 @RequestMapping("/api/example")
 public class ExampleController {
