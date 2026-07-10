@@ -13,4 +13,12 @@ public enum TrackType {
     ;
 
     private final String displayName;
+
+    public TrackType next() {
+        return switch (this) {
+            case SELF_CARE -> GO_OUTSIDE;
+            case GO_OUTSIDE -> CONNECT_PEOPLE;
+            case CONNECT_PEOPLE -> null;
+        };
+    }
 }
