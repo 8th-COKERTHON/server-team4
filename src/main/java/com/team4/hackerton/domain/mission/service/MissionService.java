@@ -9,6 +9,7 @@ import com.team4.hackerton.domain.mission.entity.Mission;
 import com.team4.hackerton.domain.mission.entity.MissionLog;
 import com.team4.hackerton.domain.mission.repository.MissionLogRepository;
 import com.team4.hackerton.domain.mission.repository.MissionRepository;
+import com.team4.hackerton.domain.mission.entity.MissionType;
 import com.team4.hackerton.domain.track.entity.Track;
 import com.team4.hackerton.domain.track.entity.TrackType;
 import com.team4.hackerton.domain.track.entity.UserTrack;
@@ -92,11 +93,18 @@ public class MissionService {
         UserTrack userTrack = userTrackRepository.findByUserAndIsCurrentTrue(user)
                 .orElseThrow(() -> new AppException(MissionErrorCode.USER_TRACK_NOT_FOUND));
 
-        if (userTrack.getTrack().getTrackType() == TrackType.SELF_CARE) {
+        Track track = userTrack.getTrack();
+
+        if (track.getTrackType() == TrackType.SELF_CARE) {
             throw new AppException(MissionErrorCode.CUSTOM_MISSION_NOT_ALLOWED);
         }
 
-        Mission mission = missionRepository.save(Mission.ofUserCustom(user, request.getTitle()));
+        long customCount = missionRepository.countByUserAndTrackAndType(user, track, MissionType.USER_CUSTOM);
+        if (customCount >= 2) {
+            throw new AppException(MissionErrorCode.CUSTOM_MISSION_LIMIT_EXCEEDED);
+        }
+
+        Mission mission = missionRepository.save(Mission.ofUserCustom(user, track, request.getTitle()));
         return new MissionItemResponse(mission, false);
     }
 

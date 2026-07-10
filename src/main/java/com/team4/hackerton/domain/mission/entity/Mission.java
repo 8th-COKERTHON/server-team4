@@ -57,9 +57,10 @@ public class Mission {
         return mission;
     }
 
-    public static Mission ofUserCustom(User user, String title) {
+    public static Mission ofUserCustom(User user, Track track, String title) {
         Mission mission = new Mission();
         mission.user = user;
+        mission.track = track;
         mission.title = title;
         mission.type = MissionType.USER_CUSTOM;
         return mission;
