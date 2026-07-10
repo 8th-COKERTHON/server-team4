@@ -14,7 +14,7 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI openAPI() {
-        Info info = new Info().title("공모집").description("공모집 서비스 API 문서").version("0.1.0");
+        Info info = new Info().title("헤커톤 team4").description("헤커톤 team4 API 문서").version("0.1.0");
 
         // JWT 토큰 헤더 방식
         String securityScheme = "JWT TOKEN";
