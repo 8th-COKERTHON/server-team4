@@ -83,6 +83,21 @@ public class MissionController {
     }
 
     @Operation(
+            summary = "개인 미션 목록 조회",
+            description = "현재 트랙에서 추가한 개인 미션 목록과 오늘의 완료 여부를 반환합니다."
+    )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "개인 미션 목록 조회 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "소속된 트랙 없음 (MISSION404_1)", content = @Content(schema = @Schema(hidden = true)))
+    })
+    @GetMapping("/custom")
+    public ApiResponse<MissionListResponse> getCustomMissions(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        MissionListResponse response = missionService.getCustomMissions(userDetails.getUser());
+        return ApiResponse.onSuccess(MissionSuccessCode.GET_CUSTOM_MISSIONS_SUCCESS, response);
+    }
+
+    @Operation(
             summary = "미션 진행 현황 조회",
             description = "트랙 참여 후 14일 중 미션 완료한 날 수와 다음 단계 진행 가능 여부를 반환합니다.\n\n"
                     + "- 14일 중 12일 이상 완료 시 `canProceed: true`\n"
