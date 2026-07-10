@@ -14,6 +14,7 @@ public enum MissionErrorCode implements BaseErrorCode {
     ALREADY_COMPLETED(HttpStatus.CONFLICT, "MISSION409_1", "오늘 이미 완료한 미션입니다."),
     CUSTOM_MISSION_NOT_ALLOWED(HttpStatus.FORBIDDEN, "MISSION403_1", "나를 돌보기 트랙은 개인 미션을 추가할 수 없습니다."),
     CUSTOM_MISSION_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "MISSION400_1", "개인 미션은 최대 2개까지 추가할 수 있습니다."),
+    CANNOT_PROCEED(HttpStatus.BAD_REQUEST, "MISSION400_2", "아직 다음 트랙으로 진행할 수 없습니다."),
     ;
 
     private final HttpStatus status;

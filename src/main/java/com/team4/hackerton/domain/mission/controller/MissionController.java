@@ -2,6 +2,7 @@ package com.team4.hackerton.domain.mission.controller;
 
 import com.team4.hackerton.domain.mission.code.MissionSuccessCode;
 import com.team4.hackerton.domain.mission.dto.request.CustomMissionRequest;
+import com.team4.hackerton.domain.mission.dto.response.MissionCompleteResponse;
 import com.team4.hackerton.domain.mission.dto.response.MissionItemResponse;
 import com.team4.hackerton.domain.mission.dto.response.MissionListResponse;
 import com.team4.hackerton.domain.mission.dto.response.MissionProgressResponse;
@@ -50,7 +51,8 @@ public class MissionController {
 
     @Operation(
             summary = "미션 완료",
-            description = "특정 미션을 오늘 완료 처리합니다. 하루에 같은 미션은 1번만 완료할 수 있습니다."
+            description = "특정 미션을 오늘 완료 처리합니다. 하루에 같은 미션은 1번만 완료할 수 있습니다.\n\n"
+                    + "- 응답의 `trackCompleted`가 `true`이면 `POST /api/missions/proceed`를 호출하여 다음 트랙으로 이동하세요."
     )
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "미션 완료 성공"),
@@ -58,11 +60,11 @@ public class MissionController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "이미 완료한 미션 (MISSION409_1)", content = @Content(schema = @Schema(hidden = true)))
     })
     @PostMapping("/{missionId}/complete")
-    public ApiResponse<Void> completeMission(
+    public ApiResponse<MissionCompleteResponse> completeMission(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long missionId) {
-        missionService.completeMission(userDetails.getUser(), missionId);
-        return ApiResponse.onSuccess(MissionSuccessCode.COMPLETE_MISSION_SUCCESS);
+        MissionCompleteResponse response = missionService.completeMission(userDetails.getUser(), missionId);
+        return ApiResponse.onSuccess(MissionSuccessCode.COMPLETE_MISSION_SUCCESS, response);
     }
 
     @Operation(
@@ -95,6 +97,22 @@ public class MissionController {
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         MissionListResponse response = missionService.getCustomMissions(userDetails.getUser());
         return ApiResponse.onSuccess(MissionSuccessCode.GET_CUSTOM_MISSIONS_SUCCESS, response);
+    }
+
+    @Operation(
+            summary = "다음 트랙으로 진행",
+            description = "canProceed가 true일 때 현재 트랙을 완료하고 다음 트랙으로 이동합니다. 마지막 트랙이면 nextTrackName은 null입니다."
+    )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "트랙 진행 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "아직 조건 미달 (MISSION400_2)", content = @Content(schema = @Schema(hidden = true))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "소속된 트랙 없음 (MISSION404_1)", content = @Content(schema = @Schema(hidden = true)))
+    })
+    @PostMapping("/proceed")
+    public ApiResponse<MissionCompleteResponse> proceedToNextTrack(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        MissionCompleteResponse response = missionService.proceedToNextTrack(userDetails.getUser());
+        return ApiResponse.onSuccess(MissionSuccessCode.PROCEED_TRACK_SUCCESS, response);
     }
 
     @Operation(
