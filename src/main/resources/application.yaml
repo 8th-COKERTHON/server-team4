@@ -18,3 +18,8 @@ spring:
     properties:
       hibernate:
         format_sql: true     # SQL 예쁘게 출력
+
+jwt:
+  secret: ${JWT_SECRET:dev-only-secret-key-please-override-in-production-env-file-1234567890}
+  access-token-expiration: ${JWT_ACCESS_EXPIRATION:3600000}      # 1시간 (ms)
+  refresh-token-expiration: ${JWT_REFRESH_EXPIRATION:1209600000} # 14일 (ms)
