@@ -117,9 +117,20 @@ public class MissionController {
 
     @Operation(
             summary = "미션 진행 현황 조회",
-            description = "트랙 참여 후 14일 중 미션 완료한 날 수와 다음 단계 진행 가능 여부를 반환합니다.\n\n"
-                    + "- 14일 중 12일 이상 완료 시 `canProceed: true`\n"
-                    + "- 하루에 미션을 1개 이상 완료하면 해당 날은 성공으로 처리"
+            description = "현재 참여 중인 트랙의 미션 진행 현황을 반환합니다.\n\n"
+                    + "### 트랙별 목표 일수\n"
+                    + "| 트랙 | 목표 일수 |\n"
+                    + "|------|----------|\n"
+                    + "| 나를 돌보기 (SELF_CARE) | 14일 |\n"
+                    + "| 바깥으로 나가기 (GO_OUTSIDE) | 7일 |\n"
+                    + "| 사람과 연결하기 (CONNECT_PEOPLE) | 5일 |\n\n"
+                    + "### 하루 성공 기준\n"
+                    + "- 하루에 미션을 **1개 이상** 완료하면 해당 날은 성공으로 처리됩니다.\n"
+                    + "- 같은 날 여러 미션을 완료해도 1일로 계산합니다.\n\n"
+                    + "### 다음 단계 진행 조건\n"
+                    + "- 트랙별 목표 일수를 모두 채우면 `canProceed: true`\n"
+                    + "- `canProceed`가 `true`이면 `POST /api/missions/proceed`를 호출하여 다음 트랙으로 이동하세요.\n"
+                    + "- `canProceed`가 `false`이면 진행 API 호출 시 400 에러가 반환됩니다."
     )
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "진행 현황 조회 성공"),
