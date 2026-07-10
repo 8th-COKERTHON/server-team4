@@ -13,6 +13,7 @@ public enum MissionSuccessCode implements BaseSuccessCode {
     COMPLETE_MISSION_SUCCESS(HttpStatus.OK, "MISSION200_1", "미션 완료 처리에 성공했습니다."),
     ADD_CUSTOM_MISSION_SUCCESS(HttpStatus.OK, "MISSION200_2", "개인 미션 추가에 성공했습니다."),
     GET_PROGRESS_SUCCESS(HttpStatus.OK, "MISSION200_3", "미션 진행 현황 조회에 성공했습니다."),
+    GET_CUSTOM_MISSIONS_SUCCESS(HttpStatus.OK, "MISSION200_4", "개인 미션 목록 조회에 성공했습니다."),
     ;
 
     private final HttpStatus status;

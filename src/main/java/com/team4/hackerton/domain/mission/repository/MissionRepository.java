@@ -20,4 +20,6 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
     Optional<Mission> findTopByUserOrderByCreatedAtDesc(User user);
 
     long countByUserAndTrackAndType(User user, Track track, MissionType type);
+
+    List<Mission> findByUserAndTrackAndType(User user, Track track, MissionType type);
 }

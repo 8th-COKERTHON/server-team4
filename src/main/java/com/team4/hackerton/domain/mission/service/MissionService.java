@@ -108,6 +108,27 @@ public class MissionService {
         return new MissionItemResponse(mission, false);
     }
 
+    public MissionListResponse getCustomMissions(User user) {
+        UserTrack userTrack = userTrackRepository.findByUserAndIsCurrentTrue(user)
+                .orElseThrow(() -> new AppException(MissionErrorCode.USER_TRACK_NOT_FOUND));
+
+        Track track = userTrack.getTrack();
+        LocalDate today = LocalDate.now();
+
+        Set<Long> completedMissionIds = missionLogRepository.findByUserAndTrackAndPerformedDate(user, track, today)
+                .stream()
+                .map(log -> log.getMission().getId())
+                .collect(Collectors.toSet());
+
+        List<MissionItemResponse> result = missionRepository
+                .findByUserAndTrackAndType(user, track, MissionType.USER_CUSTOM)
+                .stream()
+                .map(mission -> new MissionItemResponse(mission, completedMissionIds.contains(mission.getId())))
+                .collect(Collectors.toList());
+
+        return new MissionListResponse(result);
+    }
+
     public MissionProgressResponse getMissionProgress(User user) {
         UserTrack userTrack = userTrackRepository.findByUserAndIsCurrentTrue(user)
                 .orElseThrow(() -> new AppException(MissionErrorCode.USER_TRACK_NOT_FOUND));
