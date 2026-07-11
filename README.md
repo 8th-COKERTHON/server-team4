@@ -130,4 +130,6 @@ JWT_SECRET=
 ./gradlew bootRun
 ```
 
-Swagger UI: `http://localhost:8080/swagger-ui/`
+Swagger UI (로컬): `http://localhost:8080/swagger-ui/`
+
+Swagger UI (서버): https://13.125.129.40.nip.io/swagger-ui/index.html#/
